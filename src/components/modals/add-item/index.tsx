@@ -3,7 +3,7 @@ import { Modal, notification } from 'antd';
 import { IInventory } from '../../../App';
 import firebase from 'firebase';
 import { fireStore } from '../../../firebaseDb';
-import { AddItemForm } from '../../add-item-form';
+import { AddItemForm } from '../../formik-forms/add-item-form';
 import { IPlaces } from '../../../App';
 
 interface IProps {
@@ -40,7 +40,11 @@ export const AddItemModal = React.memo((props:IProps) => {
                 setIsVisible(false)
             }}
         >
-            <AddItemForm places={places} setCount={setCount} setInventoryName={setInventoryName} setPlaceId={setPlaceId}/>
+            <AddItemForm places={places}
+                setCount={setCount}
+                setInventoryName={setInventoryName}
+                setPlaceId={setPlaceId}
+            />
         </Modal>
     )
 });

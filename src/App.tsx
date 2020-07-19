@@ -5,6 +5,7 @@ import {fireStore} from "./firebaseDb/index";
 import {Item, PlaceList} from "./place"
 import {DeleteItemModal} from "./components/modals/delete-item"
 import { AddItemModal } from './components/modals/add-item';
+import { ModifyItemModal } from './components/modals/modify-item';
 
 export interface IPlaces{
     id: string;
@@ -22,13 +23,11 @@ export const App = React.memo(() => {
 
     const [places, setPlaces] = useState<IPlaces[]>();
     const [inventory, setInventory] = useState<IInventory[]>();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectPlace, setSelectPlace] = useState();
-    //const [showItem, setShowItem] = useState(false);
-    // console.log(selectPlace);
-    //console.log(places);
-    // console.log(inventory);
     const [selectedPlace, setSelectedPlace] = useState<string>("");
-    const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+    const [openedDeleteItemModal, setOpenedDeleteItemModal] = useState<boolean>(false);
+    const [openedModifyItemModal, setOpenedModifyItemModal] = useState<boolean>(false);
     const [openedAddItemModal, setOpenedAddItemModal] = useState<boolean>(false)
 
   useEffect(() => {
@@ -78,13 +77,22 @@ export const App = React.memo(() => {
           setOpenedAddItemModal(true)
         }}>Add Item</button>
         <button className="button" onClick={() => { 
-          setIsModalVisible(true)
+          setOpenedDeleteItemModal(true)
         }}>Delete Item</button>
-        {/* <button className="button">Modify Item</button> */}
+        <button className="button" onClick={() => { 
+          setOpenedModifyItemModal(true)
+        }}>Modify Item</button>
       </div>
       <DeleteItemModal 
-        isVisible={isModalVisible}
-        setIsVisible={setIsModalVisible}
+        isVisible={openedDeleteItemModal}
+        setIsVisible={setOpenedDeleteItemModal}
+        inventory={inventory}
+        setInventory={setInventory}
+        selectedPlace={selectedPlace}
+      />
+      <ModifyItemModal 
+        isVisible={openedModifyItemModal}
+        setIsVisible={setOpenedModifyItemModal}
         inventory={inventory}
         setInventory={setInventory}
         selectedPlace={selectedPlace}

@@ -44,12 +44,6 @@ export function Item({id, placeID, name, count}:any){
     }
 }
 
-export function ItemList(selectedItems:any){
-    return(
-        <h1>{selectedItems.lengh}</h1>
-    )
-}
-
 export function PlaceList(props:{places1:IPlaces[] | undefined, setSelect:(value:any) => void, setSelectedPlace:(values:string) => void }){
     const {places1, setSelect, setSelectedPlace} = props;
 
@@ -71,9 +65,7 @@ export function PlaceList(props:{places1:IPlaces[] | undefined, setSelect:(value
     const drawParts = (placeId:string) => {
         if(clickedParts){
             for (const parts of clickedParts){
-                console.log(parts);
                 if(placeId===parts){
-                    console.log(placeId);
                     return true;
                 }
             }
@@ -83,16 +75,16 @@ export function PlaceList(props:{places1:IPlaces[] | undefined, setSelect:(value
     return(
         <div>{places1?.map((place:any) => {
             if(topLvl(place.id) || drawParts(place.id)){
-            return(
-                <Place 
-                  key = {place.id}
-                  name = {place.data.name} 
-                  parts = {place.parts} 
-                  id = {place.id}
-                  setSelect={setSelect}
-                  setSelectedPlace={setSelectedPlace}
-                />
-            )
+                return(
+                    <Place 
+                    key = {place.id}
+                    name = {place.data.name} 
+                    parts = {place.parts} 
+                    id = {place.id}
+                    setSelect={setSelect}
+                    setSelectedPlace={setSelectedPlace}
+                    />
+                )
             }
         })}</div>
     )

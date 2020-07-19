@@ -4,6 +4,7 @@ import { DeleteItemForm } from '../../formik-forms/delete-item-form';
 import { IInventory } from '../../../App';
 import firebase from 'firebase';
 import { fireStore } from '../../../firebaseDb';
+import { ModifyItemForm } from '../../formik-forms/modify-item-form';
 
 interface IProps {
     isVisible:boolean;
@@ -13,7 +14,7 @@ interface IProps {
     setIsVisible:(state:boolean) => void;
 };
 
-export const DeleteItemModal = React.memo((props:IProps) => {
+export const ModifyItemModal = React.memo((props:IProps) => {
     const {
         isVisible,
         setIsVisible,
@@ -24,26 +25,28 @@ export const DeleteItemModal = React.memo((props:IProps) => {
 
     const [selectedItem, setSelectedItem] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [count, setCount] = useState<string | number | undefined>(1)
 
     const onSubmit = useSubmit(setInventory,setIsLoading);
 
     return (
         <Modal
-            title="Delete Item"
+            title="Modify Item"
             visible={isVisible}
             onOk={() => {
                 // setIsVisible(false)
-                onSubmit(selectedItem,setIsVisible)
+                onSubmit(count,selectedItem,setIsVisible)
             }}
             confirmLoading={isLoading}
             onCancel={() => {
                 setIsVisible(false)
             }}
         >
-            <DeleteItemForm 
+            <ModifyItemForm 
                 inventory={inventory}
                 selectedPlace={selectedPlace}
                 setSelectedItem={setSelectedItem}
+                setCount={setCount}
             />
         </Modal>
     )
@@ -51,27 +54,35 @@ export const DeleteItemModal = React.memo((props:IProps) => {
 
 function useSubmit(setInventory:any,setIsLoading:any){
     return useCallback((
-        itemId: string,
+        count:string | number | undefined,
+        value: string,
         setIsVisible:any,
     ) => {
-        if(itemId === ""){
+        const itemInfo = JSON.parse(value);
+        if(!count || !value){
             notification.error({
                 message: "Oops...",
-                description: "Field must be filled",
+                description: "Fields must be filled",
             });
             return;
         }
         setIsLoading(true);
-        firebase.firestore().collection("inventory").doc(itemId).delete().then(() => {
-                fireStore.collection("inventory").get().then(response => { 
-                    const docs = response.docs.map(x => ({ 
-                        id: x.id,
-                        data: x.data(), 
-                        placeId: x.data().place?.id
-                    })); 
-                    setInventory(docs);
-                    setIsLoading(false);
-                    setIsVisible(false);
+        firebase.firestore().collection("inventory").doc(itemInfo.id).delete().then(() => {
+                firebase.firestore().collection("inventory").doc().set({ 
+                    name: itemInfo.name, 
+                    count: count, 
+                    place: firebase.firestore().collection("places").doc(itemInfo.place) // main-101 – id места
+                }).then(() => {
+                    fireStore.collection("inventory").get().then(response => { 
+                        const docs = response.docs.map(x => ({
+                            id: x.id,
+                            data: x.data(), 
+                            placeId: x.data().place?.id
+                        })); 
+                        setInventory(docs);
+                        setIsLoading(false);
+                        setIsVisible(false);
+                    });
                 });
             });
     },[setInventory, setIsLoading]);
