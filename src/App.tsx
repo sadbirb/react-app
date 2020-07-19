@@ -80,7 +80,7 @@ export const App = React.memo(() => {
         <button className="button" onClick={() => { 
           setIsModalVisible(true)
         }}>Delete Item</button>
-        <button className="button">Modify Item</button>
+        {/* <button className="button">Modify Item</button> */}
       </div>
       <DeleteItemModal 
         isVisible={isModalVisible}
