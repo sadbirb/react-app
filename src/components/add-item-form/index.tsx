@@ -54,7 +54,7 @@ export const AddItemForm = React.memo((props:IProps) => {
                         }}
                     />
                     <Select name="placeId" className="select" onChange={setPlaceId}>
-                        <OptGroup label="Delete Item" className="optGroup">
+                        <OptGroup label="Add Item" className="optGroup">
                             {places?.map((place) => {
                                 return <Option className="option"
                                             key={place.id}
